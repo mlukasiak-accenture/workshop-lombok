@@ -9,14 +9,6 @@ public class EquityDTO {
     private String currencyCode;
     private long shares;
 
-    public EquityDTO(String name, String isin, String code, String currencyCode, long shares) {
-        this.name = name;
-        this.isin = isin;
-        this.code = code;
-        this.currencyCode = currencyCode;
-        this.shares = shares;
-    }
-
     public String getName() {
         return name;
     }
@@ -35,6 +27,26 @@ public class EquityDTO {
 
     public long getShares() {
         return shares;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setIsin(String isin) {
+        this.isin = isin;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
+
+    public void setShares(long shares) {
+        this.shares = shares;
     }
 
     @Override
