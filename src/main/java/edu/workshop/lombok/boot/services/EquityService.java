@@ -6,28 +6,32 @@ import edu.workshop.lombok.boot.mapping.DTOMapper;
 import edu.workshop.lombok.boot.model.EquityDTO;
 import edu.workshop.lombok.boot.persistence.entities.Equity;
 import edu.workshop.lombok.boot.persistence.repositories.EquityRepository;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import lombok.val;
-import lombok.var;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class EquityService {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(EquityService.class);
+
     private final EquityRepository equityRepository;
     private final DTOMapper dtoMapper;
 
-    public EquityDTO createEquity(@NonNull EquityDTO equityDTO) {
+    public EquityService(EquityRepository equityRepository, DTOMapper dtoMapper) {
+        this.equityRepository = equityRepository;
+        this.dtoMapper = dtoMapper;
+    }
+
+    public EquityDTO createEquity(EquityDTO equityDTO) {
+        if (equityDTO == null) {
+            throw new NullPointerException("Equity cannot be null.");
+        }
         log.info("Checking if equity already present for code {}", equityDTO.getCode());
-        val existingEquity = equityRepository.findOneByCode(equityDTO.getCode());
+        Optional<Equity> existingEquity = equityRepository.findOneByCode(equityDTO.getCode());
         if (!existingEquity.isPresent()) {
             log.info("Equity does not exist. Creating equity: {}", equityDTO);
-            var newEquity = dtoMapper.dtoToEquity(equityDTO);
+            Equity newEquity = dtoMapper.dtoToEquity(equityDTO);
             newEquity = equityRepository.save(newEquity);
             log.info("Equity saved with id: {}", newEquity.getId());
             return dtoMapper.equityToDTO(newEquity);
@@ -42,7 +46,7 @@ public class EquityService {
     }
 
     public EquityDTO getByCode(String code) {
-        val equity = equityRepository.findOneByCode(code).orElseThrow(() -> new NotFoundException(Equity.class, code));
+        Equity equity = equityRepository.findOneByCode(code).orElseThrow(() -> new NotFoundException(Equity.class, code));
         return dtoMapper.equityToDTO(equity);
     }
 }

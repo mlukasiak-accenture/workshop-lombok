@@ -6,18 +6,14 @@ import lombok.val;
 
 import java.util.Optional;
 
-public class ProductService {
+public abstract class ProductService {
 
     public Product createProduct(ProductDTO productDTO) {
         val existingProduct = getByName(productDTO.getName());
         return existingProduct.orElseGet(() -> save(productDTO));
     }
 
-    private Product save(ProductDTO productDTO) {
-        return null; //TODO
-    }
+    abstract Product save(ProductDTO productDTO);
 
-    private Optional<Product> getByName(String name) {
-        return Optional.empty(); //TODO
-    }
+    abstract Optional<Product> getByName(String name);
 }
